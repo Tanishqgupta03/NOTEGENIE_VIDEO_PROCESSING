@@ -25,11 +25,11 @@ export async function POST(request) {
     const body = await request.json();
     console.log('Request Body:', body); // Debugging: Log request body
 
-    const { userId, videoId, videoUrl } = body;
+    const { userId, videoId, videoUrl, tier, usageCount } = body;
 
     // Validate required fields
-    if (!userId || !videoId || !videoUrl) {
-      console.error('Missing required fields:', { userId, videoId, videoUrl }); // Debugging: Log missing fields
+    if (!userId || !videoId || !videoUrl || !tier || !usageCount) {
+      console.error('Missing required fields:', { userId, videoId, videoUrl, tier, usageCount }); // Debugging: Log missing fields
       let response = NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -43,7 +43,7 @@ export async function POST(request) {
 
     // Process the video
     console.log('Starting video processing...'); // Debugging: Log start of processing
-    const result = await processVideo(userId, videoId, videoUrl);
+    const result = await processVideo(userId, videoId, videoUrl, tier, usageCount);
     console.log('Video processing completed:', result); // Debugging: Log processing result
 
     // Return the result
