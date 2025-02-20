@@ -7,11 +7,11 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const assemblyai = new AssemblyAI({ apiKey: process.env.ASSEMBLYAI_API_KEY });
 
 // Define limits for each tier
-const TIER_LIMITS = {
-  Starter: 3,
-  Pro: 8,
-  Elite: 12,
-};
+// const TIER_LIMITS = {
+//   Starter: 3,
+//   Pro: 8,
+//   Elite: 12,
+// };
 
 // Define transcription percentage based on usage count
 const TRANSCRIPTION_LIMITS = {
@@ -63,7 +63,8 @@ export const processVideo = async (userId, videoId, videoUrl, tier, usageCount) 
     console.log('Summary:', summary);
 
     // Step 3: Extract Action Items with tier-based limits
-    const actionItems = extractActionItems(summary, TIER_LIMITS[tier]);
+    const actionItems = extractActionItems(summary);
+    //const actionItems = extractActionItems(summary, TIER_LIMITS[tier]);
     console.log('Extracted Action Items:', actionItems);
 
     // Step 4: Save the results to the database
@@ -102,16 +103,22 @@ function extractActionItems(notes, taskLimit) {
   
   let match;
   while ((match = actionRegex.exec(notes)) !== null) {
-    if (actionItems.length < taskLimit) {
-      actionItems.push({
-        task: match[2].trim(),
-        assignedTo: match[1].trim(),
-        dueDate: new Date(), // Default due date (can be customized)
-        status: 'Pending',
-      });
-    } else {
-      break; // Stop if task limit is reached
-    }
+    actionItems.push({
+          task: match[2].trim(),
+          assignedTo: match[1].trim(),
+          dueDate: new Date(), // Default due date (can be customized)
+          status: 'Pending',
+        });
+    // if (actionItems.length < taskLimit) {
+    //   actionItems.push({
+    //     task: match[2].trim(),
+    //     assignedTo: match[1].trim(),
+    //     dueDate: new Date(), // Default due date (can be customized)
+    //     status: 'Pending',
+    //   });
+    // } else {
+    //   break; // Stop if task limit is reached
+    // }
   }
 
   return actionItems;
